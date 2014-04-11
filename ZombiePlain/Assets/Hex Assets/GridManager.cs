@@ -5,7 +5,9 @@ public class GridManager: MonoBehaviour
 {
 	//following public variable is used to store the hex model prefab;
 	//instantiate it by dragging the prefab on this variable using unity editor
-	public GameObject Hex;
+	public GameObject Hex1;
+	public GameObject Hex2;
+	public GameObject Hex3;
 	//next two variables can also be instantiated using unity editor
 	public int gridWidthInHexes = 10;
 	public int gridHeightInHexes = 10;
@@ -18,8 +20,8 @@ public class GridManager: MonoBehaviour
 	void setSizes()
 	{
 		//renderer component attached to the Hex prefab is used to get the current width and height
-		hexWidth = Hex.renderer.bounds.size.x;
-		hexHeight = Hex.renderer.bounds.size.z;
+		hexWidth = Hex1.renderer.bounds.size.x;
+		hexHeight = Hex1.renderer.bounds.size.z;
 	}
 	
 	//Method to calculate the position of the first hexagon tile
@@ -60,8 +62,24 @@ public class GridManager: MonoBehaviour
 		{
 			for (float x = 0; x < gridWidthInHexes; x++)
 			{
+				int hexType = Random.Range(0, 3);
 				//GameObject assigned to Hex public variable is cloned
-				GameObject hex = (GameObject)Instantiate(Hex);
+				GameObject hex = null;
+				switch(hexType)
+				{
+					case 0:
+						hex = (GameObject)Instantiate(Hex1);
+						break;
+					case 1:
+						hex = (GameObject)Instantiate(Hex2);
+						break;
+					case 2:
+						hex = (GameObject)Instantiate(Hex3);
+						break;
+					default:
+						hex = (GameObject)Instantiate(Hex1);
+						break;
+				}
 				//Current position in grid
 				Vector2 gridPos = new Vector2(x, y);
 				hex.transform.position = calcWorldCoord(gridPos);
