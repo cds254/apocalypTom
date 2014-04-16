@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Camera Assets\Camera.cs" />
      <Compile Include="Assets\Cube Assets\Cube.cs" />
      <Compile Include="Assets\Hex Assets\GridManager.cs" />
      <Compile Include="Assets\Player Assets\Tom.cs" />
