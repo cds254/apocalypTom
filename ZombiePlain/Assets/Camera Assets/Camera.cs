@@ -34,7 +34,7 @@ public class Camera : MonoBehaviour {
 		Quaternion target = Quaternion.Euler(currAngles.x, 180f+angle, currAngles.z);
 		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
 		*/
-
+		
 		if (Input.GetAxis ("Horizontal") > 0) {
 			startPoint += new Vector3 (moveSpeed * Time.deltaTime, 0f, 0f);
 		} else if (Input.GetAxis ("Horizontal") < 0) {

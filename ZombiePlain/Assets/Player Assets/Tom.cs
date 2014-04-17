@@ -26,18 +26,21 @@ public class Tom : MonoBehaviour {
 			transform.Translate (0f, -moveSpeed * Time.deltaTime, 0f);
 		}
 		*/
+		float xDistance = 0;
+		float yDistance = 0;
 
 		if (Input.GetAxis ("Horizontal") > 0) {
-			transform.Translate (0f, -moveSpeed * Time.deltaTime, 0f);
+			xDistance = moveSpeed * Time.deltaTime;
 		} else if (Input.GetAxis ("Horizontal") < 0) {
-			transform.Translate (0f, moveSpeed * Time.deltaTime, 0f);
+			xDistance = -moveSpeed * Time.deltaTime;
 		}
 		
 		if (Input.GetAxis ("Vertical") > 0) {
-			transform.Translate (-moveSpeed * Time.deltaTime, 0f, 0f);
+			yDistance = moveSpeed * Time.deltaTime;
 		} else if (Input.GetAxis ("Vertical") < 0) {
-			transform.Translate (moveSpeed * Time.deltaTime, 0f, 0f);
+			yDistance = -moveSpeed * Time.deltaTime;
 		}
+
 
 		if (Input.GetKey (KeyCode.X)) {
 			transform.Translate (0f, 0f, moveSpeed * Time.deltaTime);
@@ -49,5 +52,9 @@ public class Tom : MonoBehaviour {
 		Vector3 currAngles = transform.eulerAngles;
 		Quaternion target = Quaternion.Euler(currAngles.x, 180f-angle, currAngles.z);
 		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
+
+		// rotate
+		Vector3 moveVec = new Vector3 (xDistance, 0f, yDistance);
+		transform.Translate (moveVec, Space.World);
 	}
 }
