@@ -179,14 +179,9 @@ public class GridManager: MonoBehaviour
 		bool[] expCores = new bool[biomeCores]; //which cores are expired
 		int expCount = 0; //count of expired cores
 		//cores expire when all tiles in the current ring are already occupied
-		int failSafe = 0;
 		int ring = 0; // current ring
 		while (expCount < biomeCores) 
 		{
-			if(failSafe > 25)
-				break;
-			failSafe++;
-
 			ring++; //increment ring number
 
 			for(int i = 0; i < biomeCores; i++)
