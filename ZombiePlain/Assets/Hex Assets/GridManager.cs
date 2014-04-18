@@ -16,13 +16,13 @@ public class GridManager: MonoBehaviour
 	public int preDropPenalty = 5;
 	public int dropDepthPenalty = 50;
 	public int postDropPenalty = 10;
-	public int biomeCores = 10;
+	public int biomeCores = 15;
 	//Hexagon tile width and height in game world
 	private float hexWidth;
 	private float hexHeight;
 	private int currType;
 	private bool[,] occArray;
-	private Vector2[] coreArray;
+	private Vector3[] coreArray;
 	//Method to initialise Hexagon width and height
 	void setSizes()
 	{
@@ -36,7 +36,7 @@ public class GridManager: MonoBehaviour
 	{
 		//Default value is false for each bool
 		occArray = new bool[gridWidthInHexes, gridHeightInHexes];
-		coreArray = new Vector2[biomeCores];
+		coreArray = new Vector3[biomeCores];
 	}
 	
 	//Method to calculate the position of the first hexagon tile
@@ -76,34 +76,345 @@ public class GridManager: MonoBehaviour
 		//Randomly generate core tiles
 		for (int i = 0; i < biomeCores; i++) 
 		{
-			coreArray[i] = new Vector2((float)Random.Range(0, gridWidthInHexes), 
-			                             (float)Random.Range(0, gridHeightInHexes));
+			coreArray [i] = new Vector3 ((float)Random.Range (0, gridWidthInHexes), 
+			                             (float)Random.Range (0, gridHeightInHexes), 0f);
 
-			int hexType = Random.Range(0, 3);
+			//Make sure it's not right next to another one
+			bool redo = false;
+			int minSpace = 10;
+			for(int x = 0; x < i; x++)
+			{
+				if((Mathf.Abs(coreArray[x].x - coreArray[i].x) < minSpace) &&
+				   (Mathf.Abs(coreArray[x].x - coreArray[i].x) < minSpace))
+					redo = true;
+			}
+			int j = 0; //counter to make sure there is not an infinite loop
+			while((j < 50) && redo)
+			{
+				coreArray [i] = new Vector3 ((float)Random.Range (0, gridWidthInHexes), 
+				                             (float)Random.Range (0, gridHeightInHexes), 0f);
+
+				for(int x = 0; x < i; x++)
+				{
+					if((Mathf.Abs(coreArray[x].x - coreArray[i].x) < minSpace) &&
+					   (Mathf.Abs(coreArray[x].x - coreArray[i].x) < minSpace))
+						redo = true;
+					else
+						redo = false;
+				}
+
+				j++;
+			}
+		}
+
+		int plainCount = 0;
+		int forestCount = 0;
+		int desertCount = 0;
+		for (int i = 0; i < biomeCores; i++)
+		{
+			int hexType;
+			bool redo = false;
+			int offNum = 2;
+			int maxRedo = 10;
+			int j = 0;
+			do
+			{
+				j++;
+				hexType = Random.Range(0, 3);
+				switch(hexType)
+				{
+				case 0:
+					if(((plainCount - forestCount) >= offNum) &&
+					   ((plainCount - desertCount) >= offNum))
+						redo = true;
+					break;
+				case 1:
+					if(((forestCount - plainCount) >= offNum) &&
+					   ((forestCount - desertCount) >= offNum))
+						redo = true;
+					break;
+				case 2:
+					if(((desertCount - forestCount) >= offNum) &&
+					   ((desertCount - plainCount) >= offNum))
+						redo = true;
+					break;
+				default:
+					break;
+				}
+
+			}while(redo && (j <= maxRedo));
+
 			GameObject coreHex = null;
 			switch(hexType)
 			{
 				case 0:
 					coreHex = (GameObject)Instantiate(Hex1);
+					coreArray[i].z = 1f;
+					plainCount++;
 					break;
 				case 1:
 					coreHex = (GameObject)Instantiate(Hex2);
+					coreArray[i].z = 2f;
+					forestCount++;
 					break;
 				case 2:
 					coreHex = (GameObject)Instantiate(Hex3);
+					coreArray[i].z = 3f;
+					desertCount++;
 					break;
 				default:
 					coreHex = (GameObject)Instantiate(Hex1);
+					coreArray[i].z = 1f;
+					plainCount++;
 					break;
 			}
 
-			coreHex.transform.position = calcWorldCoord(coreArray[i]);
+			coreHex.transform.position = calcWorldCoord(new Vector2(coreArray[i].x, coreArray[i].y));
 			coreHex.transform.parent = hexGridGO.transform;
+
+			//Mark core tiles as occupied
+			occArray[(int)coreArray[i].x, (int)coreArray[i].y] = true;
+		}
+
+		for (int i = 0; i < biomeCores; i++) 
+		{
+			Vector3 currCore = coreArray[i];
+			int hexType = (int)currCore.z;
+			Vector2 currPos;
+
+			//if core is in even row number top and bottom x coords are -1
+			bool isEven;
+			if ((currCore.y % 2) == 0)
+				isEven = true;
+			else
+				isEven = false;
+
+			for(int ring = 1; ring <= 8; ring++)
+			{
+				currPos = new Vector2(currCore.x + ring, currCore.y);
+				int sidePos = 1;
+				/*
+				if (!((currCore.x < 0) || (currCore.y < 0) || 
+				  		(currCore.x > gridWidthInHexes) || (currCore.y > gridHeightInHexes)))
+				{
+				*/
+				if (currPos.x < gridWidthInHexes)
+				{
+					if (!occArray[(int)currPos.x, (int)currPos.y])
+					{
+						GameObject hex = null;
+						switch(hexType)
+						{
+						case 1:
+							hex = (GameObject)Instantiate(Hex1);
+							break;
+						case 2:
+							hex = (GameObject)Instantiate(Hex2);
+							break;
+						case 3:
+							hex = (GameObject)Instantiate(Hex3);
+							break;
+						default:
+							hex = (GameObject)Instantiate(Hex1);
+							break;
+						}
+
+						//Current position in grid
+						hex.transform.position = calcWorldCoord(currPos);
+						hex.transform.parent = hexGridGO.transform;
+
+						occArray[(int)currPos.x, (int)currPos.y] = true;
+					}
+				}
+
+				bool rowEven = isEven;
+				//Fill in each of the six sides of the ring
+				for(int j = 0; j < 6; j++)
+				{
+					Vector2 nextPos = currPos;
+					while (sidePos < ring)
+					{
+						switch(j)
+						{
+						case 0:
+							if(rowEven)
+							{
+								nextPos = new Vector2(currPos.x - 1, currPos.y + 1);
+							}
+							else
+							{
+								nextPos = new Vector2(currPos.x , currPos.y + 1);
+							}
+							rowEven = !rowEven;
+							break;
+						case 1:
+							if(rowEven)
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x - 1, currPos.y + 1);
+									rowEven = !rowEven;
+								}
+								else
+									nextPos = new Vector2(currPos.x - 1, currPos.y);
+							}
+							else
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x, currPos.y + 1);
+									rowEven = !rowEven;
+								}
+								else
+									nextPos = new Vector2(currPos.x - 1, currPos.y);
+							}
+							break;
+						case 2:
+							if(rowEven)
+							{
+								if(sidePos == 0)
+									nextPos = new Vector2(currPos.x - 1, currPos.y);
+								else
+								{
+									nextPos = new Vector2(currPos.x - 1, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+									
+							}
+							else
+							{
+								if(sidePos == 0)
+									nextPos = new Vector2(currPos.x - 1, currPos.y);
+								else
+								{
+									nextPos = new Vector2(currPos.x, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+							}
+							break;
+						case 3:
+							if(rowEven)
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x - 1, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+								else
+								{
+									nextPos = new Vector2(currPos.x, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+							}
+							else
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+								else
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+							}
+							break;
+						case 4:
+							if(rowEven)
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+								else
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y);
+								}
+							}
+							else
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y - 1);
+									rowEven = !rowEven;
+								}
+								else
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y);
+								}
+							}
+							break;
+						case 5:
+							if(rowEven)
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y);
+								}
+								else
+								{
+									nextPos = new Vector2(currPos.x, currPos.y + 1);
+									rowEven = !rowEven;
+								}
+							}
+							else
+							{
+								if(sidePos == 0)
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y);
+								}
+								else
+								{
+									nextPos = new Vector2(currPos.x + 1, currPos.y + 1);
+									rowEven = !rowEven;
+								}
+							}
+							break;
+						default:
+							break;	
+						}
+
+						//If next position isn't out of bound, add tile
+						if (!((nextPos.x < 0) || (nextPos.y < 0) || 
+						      (nextPos.x >= gridWidthInHexes) || (nextPos.y >= gridHeightInHexes)))
+						{
+							GameObject hex = null;
+							switch(hexType)
+							{
+							case 1:
+								hex = (GameObject)Instantiate(Hex1);
+								break;
+							case 2:
+								hex = (GameObject)Instantiate(Hex2);
+								break;
+							case 3:
+								hex = (GameObject)Instantiate(Hex3);
+								break;
+							default:
+								hex = (GameObject)Instantiate(Hex1);
+								break;
+							}
+
+							//Current position in grid
+							hex.transform.position = calcWorldCoord(nextPos);
+							hex.transform.parent = hexGridGO.transform;
+							
+							occArray[(int)nextPos.x, (int)nextPos.y] = true;
+						}
+
+						currPos = nextPos;
+						sidePos++;
+					}
+					sidePos = 0;
+				}
+			}
 		}
 		
-		for (float y = 0; y < gridHeightInHexes; y++)
+		for (int y = 0; y < gridHeightInHexes; y++)
 		{
-			for (float x = 0; x < gridWidthInHexes; x++)
+			for (int x = 0; x < gridWidthInHexes; x++)
 			{
 				/*
 				int hexType = Random.Range(0, 3);
@@ -135,11 +446,26 @@ public class GridManager: MonoBehaviour
 					}
 				}
 
-				if(!isCore)
+				if(!occArray[x,y])
 				{
-					GameObject hex = (GameObject)Instantiate(BlankHex);
-
-					//mark position as generated
+					int hexType = Random.Range(0, 3);
+					//GameObject assigned to Hex public variable is cloned
+					GameObject hex = null;
+					switch(hexType)
+					{
+					case 0:
+						hex = (GameObject)Instantiate(Hex1);
+						break;
+					case 1:
+						hex = (GameObject)Instantiate(Hex2);
+						break;
+					case 2:
+						hex = (GameObject)Instantiate(Hex3);
+						break;
+					default:
+						hex = (GameObject)Instantiate(Hex1);
+						break;
+					}
 
 					//Current position in grid
 					Vector2 gridPos = new Vector2(x, y);
