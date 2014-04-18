@@ -8,6 +8,7 @@ public class GridManager: MonoBehaviour
 	public GameObject Hex1;
 	public GameObject Hex2;
 	public GameObject Hex3;
+	public GameObject BlankHex;
 	//next two variables can also be instantiated using unity editor
 	public int gridWidthInHexes = 10;
 	public int gridHeightInHexes = 10;
@@ -15,11 +16,13 @@ public class GridManager: MonoBehaviour
 	public int preDropPenalty = 5;
 	public int dropDepthPenalty = 50;
 	public int postDropPenalty = 10;
+	public int biomeCores = 10;
 	//Hexagon tile width and height in game world
 	private float hexWidth;
 	private float hexHeight;
 	private int currType;
 	private bool[,] occArray;
+	private Vector2[] coreArray;
 	//Method to initialise Hexagon width and height
 	void setSizes()
 	{
@@ -29,10 +32,11 @@ public class GridManager: MonoBehaviour
 	}
 
 	//initialize array to keep track which tiles have already been generated
-	void initOccArray()
+	void initArrays()
 	{
+		//Default value is false for each bool
 		occArray = new bool[gridWidthInHexes, gridHeightInHexes];
-		//occArray = Enumerable.Repeat(1,25).To2DArray(5,5);
+		coreArray = new Vector2[biomeCores];
 	}
 	
 	//Method to calculate the position of the first hexagon tile
@@ -68,11 +72,40 @@ public class GridManager: MonoBehaviour
 	{
 		//Game object which is the parent of all the hex tiles
 		GameObject hexGridGO = new GameObject("HexGrid");
+
+		//Randomly generate core tiles
+		for (int i = 0; i < biomeCores; i++) 
+		{
+			coreArray[i] = new Vector2((float)Random.Range(0, gridWidthInHexes), 
+			                             (float)Random.Range(0, gridHeightInHexes));
+
+			int hexType = Random.Range(0, 3);
+			GameObject coreHex = null;
+			switch(hexType)
+			{
+				case 0:
+					coreHex = (GameObject)Instantiate(Hex1);
+					break;
+				case 1:
+					coreHex = (GameObject)Instantiate(Hex2);
+					break;
+				case 2:
+					coreHex = (GameObject)Instantiate(Hex3);
+					break;
+				default:
+					coreHex = (GameObject)Instantiate(Hex1);
+					break;
+			}
+
+			coreHex.transform.position = calcWorldCoord(coreArray[i]);
+			coreHex.transform.parent = hexGridGO.transform;
+		}
 		
 		for (float y = 0; y < gridHeightInHexes; y++)
 		{
 			for (float x = 0; x < gridWidthInHexes; x++)
 			{
+				/*
 				int hexType = Random.Range(0, 3);
 				//GameObject assigned to Hex public variable is cloned
 				GameObject hex = null;
@@ -91,13 +124,28 @@ public class GridManager: MonoBehaviour
 						hex = (GameObject)Instantiate(Hex1);
 						break;
 				}
+				*/
+				bool isCore = false;
+				for (int i = 0; i < biomeCores; i++) 
+				{
+					Vector2 coreCoord = coreArray[i];
+					if((coreCoord.x == x) && (coreCoord.y == y))
+					{
+						isCore = true;
+					}
+				}
 
-				//mark position as generated
+				if(!isCore)
+				{
+					GameObject hex = (GameObject)Instantiate(BlankHex);
 
-				//Current position in grid
-				Vector2 gridPos = new Vector2(x, y);
-				hex.transform.position = calcWorldCoord(gridPos);
-				hex.transform.parent = hexGridGO.transform;
+					//mark position as generated
+
+					//Current position in grid
+					Vector2 gridPos = new Vector2(x, y);
+					hex.transform.position = calcWorldCoord(gridPos);
+					hex.transform.parent = hexGridGO.transform;
+				}
 			}
 		}
 	}
@@ -106,7 +154,7 @@ public class GridManager: MonoBehaviour
 	void Start()
 	{
 		setSizes();
-		initOccArray();
+		initArrays();
 		createGrid();
 	}
 }

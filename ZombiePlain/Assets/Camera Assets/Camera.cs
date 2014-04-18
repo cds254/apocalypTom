@@ -47,6 +47,12 @@ public class Camera : MonoBehaviour {
 			startPoint += new Vector3 (0f, 0f, -moveSpeed * Time.deltaTime);
 		}
 
+		if (Input.GetKey (KeyCode.X)) {
+			startPoint += new Vector3 (0f, moveSpeed * Time.deltaTime, 0f);
+		} else if (Input.GetKey (KeyCode.Z)) {
+			startPoint += new Vector3 (0f, -moveSpeed * Time.deltaTime, 0f);
+		}
+
 		transform.position = startPoint + new Vector3(xOffset, yOffset, zOffset);
 	}
 }
