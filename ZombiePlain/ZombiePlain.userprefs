@@ -4,7 +4,7 @@
     <Files>
       <File FileName="Assets\Player Assets\Tom.cs" Line="45" Column="3" />
       <File FileName="Assets\Cube Assets\Cube.cs" Line="15" Column="3" />
-      <File FileName="Assets\Hex Assets\GridManager.cs" Line="142" Column="34" />
+      <File FileName="Assets\Hex Assets\GridManager.cs" Line="178" Column="3" />
       <File FileName="Assets\Camera Assets\Camera.cs" Line="53" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>

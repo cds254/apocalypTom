@@ -176,21 +176,23 @@ public class GridManager: MonoBehaviour
 			occArray[(int)coreArray[i].x, (int)coreArray[i].y] = true;
 		}
 
-		for (int i = 0; i < biomeCores; i++) 
+		int expCount = 0; //count of expired cores
+		//cores expire when all tiles in the current ring are already occupied
+		for (int ring = 1; ring <= 10; ring++) 
 		{
-			Vector3 currCore = coreArray[i];
-			int hexType = (int)currCore.z;
-			Vector2 currPos;
-
-			//if core is in even row number top and bottom x coords are -1
-			bool isEven;
-			if ((currCore.y % 2) == 0)
-				isEven = true;
-			else
-				isEven = false;
-
-			for(int ring = 1; ring <= 8; ring++)
+			for(int i = 0; i < biomeCores; i++)
 			{
+				Vector3 currCore = coreArray[i];
+				int hexType = (int)currCore.z;
+				Vector2 currPos;
+				
+				//if core is in even row number top and bottom x coords are -1
+				bool isEven;
+				if ((currCore.y % 2) == 0)
+					isEven = true;
+				else
+					isEven = false;
+
 				currPos = new Vector2(currCore.x + ring, currCore.y);
 				int sidePos = 1;
 				/*
@@ -376,9 +378,10 @@ public class GridManager: MonoBehaviour
 							break;	
 						}
 
-						//If next position isn't out of bound, add tile
+						//If next position isn't out of bound or occupied, add tile
 						if (!((nextPos.x < 0) || (nextPos.y < 0) || 
-						      (nextPos.x >= gridWidthInHexes) || (nextPos.y >= gridHeightInHexes)))
+						      (nextPos.x >= gridWidthInHexes) || (nextPos.y >= gridHeightInHexes)) &&
+						    !occArray[(int)nextPos.x, (int)nextPos.y])
 						{
 							GameObject hex = null;
 							switch(hexType)
