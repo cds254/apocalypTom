@@ -176,15 +176,29 @@ public class GridManager: MonoBehaviour
 			occArray[(int)coreArray[i].x, (int)coreArray[i].y] = true;
 		}
 
+		bool[] expCores = new bool[biomeCores]; //which cores are expired
 		int expCount = 0; //count of expired cores
 		//cores expire when all tiles in the current ring are already occupied
-		for (int ring = 1; ring <= 10; ring++) 
+		int failSafe = 0;
+		int ring = 0; // current ring
+		while (expCount < biomeCores) 
 		{
+			if(failSafe > 25)
+				break;
+			failSafe++;
+
+			ring++; //increment ring number
+
 			for(int i = 0; i < biomeCores; i++)
 			{
+				if (expCores[i])
+					continue; //If this core has expired skip this iteration
+
 				Vector3 currCore = coreArray[i];
 				int hexType = (int)currCore.z;
 				Vector2 currPos;
+				int tilesPlaced = 0; //how many tiles were able to be placed in this ring
+								 	 //cores expire when this number is 0 after the whole ring is tried
 				
 				//if core is in even row number top and bottom x coords are -1
 				bool isEven;
@@ -195,11 +209,7 @@ public class GridManager: MonoBehaviour
 
 				currPos = new Vector2(currCore.x + ring, currCore.y);
 				int sidePos = 1;
-				/*
-				if (!((currCore.x < 0) || (currCore.y < 0) || 
-				  		(currCore.x > gridWidthInHexes) || (currCore.y > gridHeightInHexes)))
-				{
-				*/
+
 				if (currPos.x < gridWidthInHexes)
 				{
 					if (!occArray[(int)currPos.x, (int)currPos.y])
@@ -405,12 +415,21 @@ public class GridManager: MonoBehaviour
 							hex.transform.parent = hexGridGO.transform;
 							
 							occArray[(int)nextPos.x, (int)nextPos.y] = true;
+
+							//Track that this tile was able to be placed
+							tilesPlaced++;
 						}
 
 						currPos = nextPos;
 						sidePos++;
 					}
 					sidePos = 0;
+				}
+				//if the none of the ring could be placed expire core
+				if(tilesPlaced == 0)
+				{
+					expCores[i] = true;
+					expCount++;
 				}
 			}
 		}
