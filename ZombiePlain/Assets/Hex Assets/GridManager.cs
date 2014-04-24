@@ -125,6 +125,8 @@ public class GridManager: MonoBehaviour
 		}
 	}
 
+	//This function generates core types with restrictions that keep the number of
+	//each type roughly even. Then the core positions are set.
 	void setCoreTypes()
 	{
 		//Counters for each core type
@@ -132,11 +134,18 @@ public class GridManager: MonoBehaviour
 		int forestCount = 0;
 		int desertCount = 0;
 
+		//Loop through all cores
 		for (int i = 0; i < biomeCores; i++)
 		{
-			int hexType;
-			bool redo = false;
-			int j = 0;
+			int hexType; //Terrain type in int form
+						 //Plains=0, Forest=1, Desert=2
+			bool redo = false; //Whether a retry is needed
+			int j = 0; //Counter for max retries
+
+			//Generate a random int 0-2 which represents a terrain type
+			//If type is ahead of both of the other types by maxTypeDisparity,
+			//retry the type generation until it is an acceptable type or max
+			//retries (type retries) is reached.
 			do
 			{
 				j++;
@@ -163,7 +172,8 @@ public class GridManager: MonoBehaviour
 				}
 				
 			}while(redo && (j <= typeRetries));
-			
+
+			//Set hex GameObject based on the generated hexType
 			GameObject coreHex = null;
 			switch(hexType)
 			{
@@ -197,6 +207,281 @@ public class GridManager: MonoBehaviour
 		}
 	}
 
+	void generateFirstRingTile(Vector2 currPos, int hexType)
+	{
+		if (currPos.x < gridWidthInHexes)
+		{
+			if (!occArray[(int)currPos.x, (int)currPos.y])
+			{
+				GameObject hex = null;
+				switch(hexType)
+				{
+				case 1:
+					hex = (GameObject)Instantiate(Hex1);
+					break;
+				case 2:
+					hex = (GameObject)Instantiate(Hex2);
+					break;
+				case 3:
+					hex = (GameObject)Instantiate(Hex3);
+					break;
+				default:
+					hex = (GameObject)Instantiate(Hex1);
+					break;
+				}
+				
+				//Current position in grid
+				hex.transform.position = calcWorldCoord(currPos);
+				
+				//Fill in occupied array
+				occArray[(int)currPos.x, (int)currPos.y] = true;
+			}
+		}
+	}
+
+	int generateRingSides(bool isEven, Vector2 currPos, int ring, int hexType)
+	{
+		int sidePos = 1; //The first hex on the ring is already generated
+		bool rowEven = isEven;
+		int tilesPlaced = 0; //how many tiles were able to be placed in this ring
+		//Fill in each of the six sides of the ring
+		for(int j = 0; j < 6; j++)
+		{
+			Vector2 nextPos = currPos;
+			while (sidePos < ring)
+			{
+				switch(j)
+				{
+				case 0:
+					if(rowEven)
+					{
+						nextPos = new Vector2(currPos.x - 1, currPos.y + 1);
+					}
+					else
+					{
+						nextPos = new Vector2(currPos.x , currPos.y + 1);
+					}
+					rowEven = !rowEven;
+					break;
+				case 1:
+					if(rowEven)
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x - 1, currPos.y + 1);
+							rowEven = !rowEven;
+						}
+						else
+							nextPos = new Vector2(currPos.x - 1, currPos.y);
+					}
+					else
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x, currPos.y + 1);
+							rowEven = !rowEven;
+						}
+						else
+							nextPos = new Vector2(currPos.x - 1, currPos.y);
+					}
+					break;
+				case 2:
+					if(rowEven)
+					{
+						if(sidePos == 0)
+							nextPos = new Vector2(currPos.x - 1, currPos.y);
+						else
+						{
+							nextPos = new Vector2(currPos.x - 1, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+						
+					}
+					else
+					{
+						if(sidePos == 0)
+							nextPos = new Vector2(currPos.x - 1, currPos.y);
+						else
+						{
+							nextPos = new Vector2(currPos.x, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+					}
+					break;
+				case 3:
+					if(rowEven)
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x - 1, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+						else
+						{
+							nextPos = new Vector2(currPos.x, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+					}
+					else
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+						else
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+					}
+					break;
+				case 4:
+					if(rowEven)
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+						else
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y);
+						}
+					}
+					else
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y - 1);
+							rowEven = !rowEven;
+						}
+						else
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y);
+						}
+					}
+					break;
+				case 5:
+					if(rowEven)
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y);
+						}
+						else
+						{
+							nextPos = new Vector2(currPos.x, currPos.y + 1);
+							rowEven = !rowEven;
+						}
+					}
+					else
+					{
+						if(sidePos == 0)
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y);
+						}
+						else
+						{
+							nextPos = new Vector2(currPos.x + 1, currPos.y + 1);
+							rowEven = !rowEven;
+						}
+					}
+					break;
+				default:
+					break;	
+				}
+				
+				//If next position isn't out of bound or occupied, add tile
+				if (!((nextPos.x < 0) || (nextPos.y < 0) || 
+				      (nextPos.x >= gridWidthInHexes) || (nextPos.y >= gridHeightInHexes)) &&
+				    !occArray[(int)nextPos.x, (int)nextPos.y])
+				{
+					GameObject hex = null;
+					switch(hexType)
+					{
+					case 1:
+						hex = (GameObject)Instantiate(Hex1);
+						break;
+					case 2:
+						hex = (GameObject)Instantiate(Hex2);
+						break;
+					case 3:
+						hex = (GameObject)Instantiate(Hex3);
+						break;
+					default:
+						hex = (GameObject)Instantiate(Hex1);
+						break;
+					}
+					
+					//Current position in grid
+					hex.transform.position = calcWorldCoord(nextPos);
+					//Fill in position in occupied array
+					occArray[(int)nextPos.x, (int)nextPos.y] = true;
+					
+					//Track that this tile was able to be placed
+					tilesPlaced++;
+				}
+				
+				currPos = nextPos;
+				sidePos++;
+			}
+			sidePos = 0;
+		}
+
+		return tilesPlaced;
+	}
+
+	int generateRing(int ring, int core)
+	{
+		Vector3 currCore = coreArray[core];
+		int hexType = (int)currCore.z;
+		Vector2 currPos;
+		int tilesPlaced = 0; //how many tiles were able to be placed in this ring
+		//cores expire when this number is 0 after the whole ring is tried
+		
+		//if core is in even row number top and bottom x coords are -1
+		bool isEven;
+		if ((currCore.y % 2) == 0)
+			isEven = true;
+		else
+			isEven = false;
+		
+		currPos = new Vector2(currCore.x + ring, currCore.y);
+		
+		generateFirstRingTile(currPos, hexType);
+
+		//return amount of tiles placed
+		return generateRingSides(isEven, currPos, ring, hexType);
+	}
+	
+	void growCores()
+	{
+		bool[] expCores = new bool[biomeCores]; //which cores are expired
+		int expCount = 0; //count of expired cores
+		//cores expire when all tiles in the current ring are already occupied
+		int ring = 0; // current ring
+		while (expCount < biomeCores) 
+		{
+			ring++; //increment ring number
+
+			//For each ring cycle through all cores to generate that ring
+			for(int i = 0; i < biomeCores; i++)
+			{
+				if (expCores[i])
+					continue; //If this core has expired skip this iteration
+				
+				int tilesPlaced = generateRing(ring, i);
+				//if the none of the ring could be placed expire core
+				if(tilesPlaced == 0)
+				{
+					expCores[i] = true;
+					expCount++;
+				}
+			}
+		}
+	}
+	
 	//Method that initialises and positions all the tiles
 	void createGrid()
 	{
@@ -206,290 +491,8 @@ public class GridManager: MonoBehaviour
 		//Set type and place each core
 		setCoreTypes ();
 
-		bool[] expCores = new bool[biomeCores]; //which cores are expired
-		int expCount = 0; //count of expired cores
-		//cores expire when all tiles in the current ring are already occupied
-		int ring = 0; // current ring
-		while (expCount < biomeCores) 
-		{
-			ring++; //increment ring number
-
-			for(int i = 0; i < biomeCores; i++)
-			{
-				if (expCores[i])
-					continue; //If this core has expired skip this iteration
-
-				Vector3 currCore = coreArray[i];
-				int hexType = (int)currCore.z;
-				Vector2 currPos;
-				int tilesPlaced = 0; //how many tiles were able to be placed in this ring
-								 	 //cores expire when this number is 0 after the whole ring is tried
-				
-				//if core is in even row number top and bottom x coords are -1
-				bool isEven;
-				if ((currCore.y % 2) == 0)
-					isEven = true;
-				else
-					isEven = false;
-
-				currPos = new Vector2(currCore.x + ring, currCore.y);
-				int sidePos = 1;
-
-				if (currPos.x < gridWidthInHexes)
-				{
-					if (!occArray[(int)currPos.x, (int)currPos.y])
-					{
-						GameObject hex = null;
-						switch(hexType)
-						{
-						case 1:
-							hex = (GameObject)Instantiate(Hex1);
-							break;
-						case 2:
-							hex = (GameObject)Instantiate(Hex2);
-							break;
-						case 3:
-							hex = (GameObject)Instantiate(Hex3);
-							break;
-						default:
-							hex = (GameObject)Instantiate(Hex1);
-							break;
-						}
-
-						//Current position in grid
-						hex.transform.position = calcWorldCoord(currPos);
-						//hex.transform.parent = hexGridGO.transform;
-
-						occArray[(int)currPos.x, (int)currPos.y] = true;
-					}
-				}
-
-				bool rowEven = isEven;
-				//Fill in each of the six sides of the ring
-				for(int j = 0; j < 6; j++)
-				{
-					Vector2 nextPos = currPos;
-					while (sidePos < ring)
-					{
-						switch(j)
-						{
-						case 0:
-							if(rowEven)
-							{
-								nextPos = new Vector2(currPos.x - 1, currPos.y + 1);
-							}
-							else
-							{
-								nextPos = new Vector2(currPos.x , currPos.y + 1);
-							}
-							rowEven = !rowEven;
-							break;
-						case 1:
-							if(rowEven)
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x - 1, currPos.y + 1);
-									rowEven = !rowEven;
-								}
-								else
-									nextPos = new Vector2(currPos.x - 1, currPos.y);
-							}
-							else
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x, currPos.y + 1);
-									rowEven = !rowEven;
-								}
-								else
-									nextPos = new Vector2(currPos.x - 1, currPos.y);
-							}
-							break;
-						case 2:
-							if(rowEven)
-							{
-								if(sidePos == 0)
-									nextPos = new Vector2(currPos.x - 1, currPos.y);
-								else
-								{
-									nextPos = new Vector2(currPos.x - 1, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-									
-							}
-							else
-							{
-								if(sidePos == 0)
-									nextPos = new Vector2(currPos.x - 1, currPos.y);
-								else
-								{
-									nextPos = new Vector2(currPos.x, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-							}
-							break;
-						case 3:
-							if(rowEven)
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x - 1, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-								else
-								{
-									nextPos = new Vector2(currPos.x, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-							}
-							else
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-								else
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-							}
-							break;
-						case 4:
-							if(rowEven)
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-								else
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y);
-								}
-							}
-							else
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y - 1);
-									rowEven = !rowEven;
-								}
-								else
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y);
-								}
-							}
-							break;
-						case 5:
-							if(rowEven)
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y);
-								}
-								else
-								{
-									nextPos = new Vector2(currPos.x, currPos.y + 1);
-									rowEven = !rowEven;
-								}
-							}
-							else
-							{
-								if(sidePos == 0)
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y);
-								}
-								else
-								{
-									nextPos = new Vector2(currPos.x + 1, currPos.y + 1);
-									rowEven = !rowEven;
-								}
-							}
-							break;
-						default:
-							break;	
-						}
-
-						//If next position isn't out of bound or occupied, add tile
-						if (!((nextPos.x < 0) || (nextPos.y < 0) || 
-						      (nextPos.x >= gridWidthInHexes) || (nextPos.y >= gridHeightInHexes)) &&
-						    !occArray[(int)nextPos.x, (int)nextPos.y])
-						{
-							GameObject hex = null;
-							switch(hexType)
-							{
-							case 1:
-								hex = (GameObject)Instantiate(Hex1);
-								break;
-							case 2:
-								hex = (GameObject)Instantiate(Hex2);
-								break;
-							case 3:
-								hex = (GameObject)Instantiate(Hex3);
-								break;
-							default:
-								hex = (GameObject)Instantiate(Hex1);
-								break;
-							}
-
-							//Current position in grid
-							hex.transform.position = calcWorldCoord(nextPos);
-							//hex.transform.parent = hexGridGO.transform;
-							
-							occArray[(int)nextPos.x, (int)nextPos.y] = true;
-
-							//Track that this tile was able to be placed
-							tilesPlaced++;
-						}
-
-						currPos = nextPos;
-						sidePos++;
-					}
-					sidePos = 0;
-				}
-				//if the none of the ring could be placed expire core
-				if(tilesPlaced == 0)
-				{
-					expCores[i] = true;
-					expCount++;
-				}
-			}
-		}
-		
-		for (int y = 0; y < gridHeightInHexes; y++)
-		{
-			for (int x = 0; x < gridWidthInHexes; x++)
-			{
-				if(!occArray[x,y])
-				{
-					int hexType = Random.Range(0, 3);
-					//GameObject assigned to Hex public variable is cloned
-					GameObject hex = null;
-					switch(hexType)
-					{
-					case 0:
-						hex = (GameObject)Instantiate(Hex1);
-						break;
-					case 1:
-						hex = (GameObject)Instantiate(Hex2);
-						break;
-					case 2:
-						hex = (GameObject)Instantiate(Hex3);
-						break;
-					default:
-						hex = (GameObject)Instantiate(Hex1);
-						break;
-					}
-
-					//Current position in grid
-					Vector2 gridPos = new Vector2(x, y);
-					hex.transform.position = calcWorldCoord(gridPos);
-				}
-			}
-		}
+		//Expand cores outward to fill remaining space
+		growCores ();
 	}
 	
 	//The grid should be generated on game start
