@@ -2,57 +2,56 @@
 using System.Collections;
 
 public class Camera : MonoBehaviour {
+	public float followDistance = 0;
 
-	public float xOffset;
-	public float yOffset;
-	public float zOffset;
+	private float trackSmooth = 1f;
+	
+	private float x;
+	private float z;
+	
+	private float xMargin = 2f;
+	private float zMargin = .5f;
+	
+	private float xMin;
+	private float zMin;
+	
+	private float xMax;
+	private float zMax;
 
-	public float moveSpeed = 10;
-	public float rotateSpeed = 10;
+	private GameObject target;
 
-	private Vector3 startPoint;
+	public void start() {
+		target = GameObject.FindGameObjectWithTag ("Player");
+	}
 
-	// Use this for initialization
-	void Start () {
-		startPoint = transform.position;
-		startPoint += new Vector3 (-xOffset, -yOffset, -zOffset);
+	// Allow camera set on player after spawn
+	public void SetTarget(GameObject t) {
+		target = t;
+	}
+
+	public void LateUpdate() {
+		if(target) {
+			if(Mathf.Abs(transform.position.x - target.transform.position.x) > xMargin){
+				x = Mathf.Lerp (transform.position.x, target.transform.position.x, trackSmooth * Time.deltaTime);
+			}
+			if(Mathf.Abs(transform.position.z - target.transform.position.z - followDistance) > zMargin) {
+				z = Mathf.Lerp (transform.position.z, target.transform.position.z - followDistance, trackSmooth * Time.deltaTime);
+			}
+			transform.position = new Vector3(x, transform.position.y, z);
+		}
+		else {
+			Debug.Log ("No player found, trying again.");
+			target = GameObject.FindGameObjectWithTag ("Player");
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		/*
-		GameObject tom = GameObject.FindGameObjectWithTag ("Player");
-		Vector3 tomPos = tom.transform.position;
-		Debug.Log (tomPos.ToString());
-		tomPos.Set (tomPos.x + xOffset, tomPos.y + yOffset, tomPos.z + zOffset);
-		transform.position = tomPos;
-		*/
-
-		/*
-		float angle = Mathf.Atan2(Input.mousePosition.y - Screen.height/2, Input.mousePosition.x - Screen.width/2) * Mathf.Rad2Deg;
-		Vector3 currAngles = transform.eulerAngles;
-		Quaternion target = Quaternion.Euler(currAngles.x, 180f+angle, currAngles.z);
-		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
-		*/
-		
-		if (Input.GetAxis ("Horizontal") > 0) {
-			startPoint += new Vector3 (moveSpeed * Time.deltaTime, 0f, 0f);
-		} else if (Input.GetAxis ("Horizontal") < 0) {
-			startPoint += new Vector3 (-moveSpeed * Time.deltaTime, 0f, 0f);
+	private float IncrementTowards(float current, float target, float accel) {
+		if (current == target) {
+			return current;
+		} else {
+			float dir = Mathf.Sign(target - current);
+			current += accel * Time.deltaTime * dir;
+			return (dir == Mathf.Sign (target - current)) ? current : target;
 		}
-		
-		if (Input.GetAxis ("Vertical") > 0) {
-			startPoint += new Vector3 (0f, 0f, moveSpeed * Time.deltaTime);
-		} else if (Input.GetAxis ("Vertical") < 0) {
-			startPoint += new Vector3 (0f, 0f, -moveSpeed * Time.deltaTime);
-		}
-
-		if (Input.GetKey (KeyCode.X)) {
-			startPoint += new Vector3 (0f, moveSpeed * Time.deltaTime, 0f);
-		} else if (Input.GetKey (KeyCode.Z)) {
-			startPoint += new Vector3 (0f, -moveSpeed * Time.deltaTime, 0f);
-		}
-
-		transform.position = startPoint + new Vector3(xOffset, yOffset, zOffset);
 	}
 }

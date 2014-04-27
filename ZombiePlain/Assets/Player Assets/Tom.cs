@@ -3,14 +3,27 @@ using System.Collections;
 
 public class Tom : MonoBehaviour {
 
-	public float moveSpeed = 10;
-	public float rotateSpeed = 10;
+	public float moveSpeed = 10f;
+	public float rotateSpeed = 10f;
+
+	private float health = 100f;
 
 	// Use this for initialization
 	void Start () {
 	
 	}
-	
+
+	public void takeDamage (float damage) {
+		health -= damage;
+
+		Debug.Log ("Health: " + health.ToString());
+
+		if (health <= 0f) {
+			// DIE
+			Debug.Log ("Dead.");
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 		/*
@@ -30,15 +43,15 @@ public class Tom : MonoBehaviour {
 		float yDistance = 0;
 
 		if (Input.GetAxis ("Horizontal") > 0) {
-			xDistance = moveSpeed * Time.deltaTime;
+			xDistance = 1;
 		} else if (Input.GetAxis ("Horizontal") < 0) {
-			xDistance = -moveSpeed * Time.deltaTime;
+			xDistance = -1;
 		}
 		
 		if (Input.GetAxis ("Vertical") > 0) {
-			yDistance = moveSpeed * Time.deltaTime;
+			yDistance = 1;
 		} else if (Input.GetAxis ("Vertical") < 0) {
-			yDistance = -moveSpeed * Time.deltaTime;
+			yDistance = -1;
 		}
 
 
@@ -55,6 +68,8 @@ public class Tom : MonoBehaviour {
 
 		// rotate
 		Vector3 moveVec = new Vector3 (xDistance, 0f, yDistance);
+		moveVec.Normalize();
+		moveVec *= moveSpeed * Time.deltaTime;
 		transform.Translate (moveVec, Space.World);
 	}
 }

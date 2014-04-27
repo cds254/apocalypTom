@@ -48,9 +48,11 @@
   <ItemGroup>
      <Compile Include="Assets\Camera Assets\Camera.cs" />
      <Compile Include="Assets\Cube Assets\Cube.cs" />
+     <Compile Include="Assets\Enemy Assets\plainZombie.cs" />
      <Compile Include="Assets\Hex Assets\GridManager.cs" />
      <Compile Include="Assets\Player Assets\Tom.cs" />
      <Compile Include="Assets\gui.cs" />
+     <Compile Include="Assets\lights.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

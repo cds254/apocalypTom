@@ -104,11 +104,6 @@ public class GridManager: MonoBehaviour
 		return (int)occArray[(int)gridCoord.x, (int)gridCoord.y].y;
 	}
 
-	public Vector3 test(Vector3 worldPos) {
-		Vector2 gridCoord = calcGridCoord(worldPos);
-
-		return new Vector3(gridCoord.x, gridCoord.y, hexWidth);
-	}
 
 	/**************************************************************************************
 	 * This method loops, generating core locations in coreArray, until the amount of cores
