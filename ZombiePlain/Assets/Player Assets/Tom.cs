@@ -15,20 +15,22 @@ public class Tom : MonoBehaviour {
 
 	public Rigidbody projectile;
 
-	public float bulletSpeed;
+
+
+	public float bulletSpeed = 1;
 
 	private float health = 100f;
 	private int mobCount = 0;
 	private int itemCount = 0;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 	private int bulletCount = 100;
-=======
+//=======
 	private string weapon = "gun";
 	private int ammo = 500;
 	private int time = 0;
 	private int counter = 0;
 	private int kills = 0;
->>>>>>> e089c57af0beb4ff928fa9dbfd1e04eff988a9a5
+//>>>>>>> e089c57af0beb4ff928fa9dbfd1e04eff988a9a5
 
 	private Animator anim;
 
@@ -42,7 +44,7 @@ public class Tom : MonoBehaviour {
 
 		Debug.Log ("Health: " + health.ToString());
 
-		if (health <= 0f) {
+		if (health <= 0) {
 			die();
 		}
 	}
@@ -77,7 +79,7 @@ public class Tom : MonoBehaviour {
 
 	private void die () {
 		Debug.Log ("Dead.");
-		Destroy(this);
+		//Destroy(this);
 	}
 
 	private void trySpawnZombie() {
@@ -112,6 +114,8 @@ public class Tom : MonoBehaviour {
 		if (itemCount < itemCap) {
 		}
 	}
+
+
 
 	// Update is called once per frame
 	void Update () {
@@ -162,8 +166,11 @@ public class Tom : MonoBehaviour {
 
 				bulletCount--;
 
+				ammo -= 1;
 				Rigidbody bullet = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
+				Physics.IgnoreCollision(bullet.collider, collider);
 				bullet.velocity = transform.TransformDirection(new Vector3(0, 0, bulletSpeed));
+
 
 			}
 		}
