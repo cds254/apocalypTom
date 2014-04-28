@@ -38,6 +38,12 @@ public class plainZombie : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (tom) {
+
+			if(GameObject.FindGameObjectWithTag("Player").GetComponent<Tom>().getHealth() <= 0)
+			{
+				die ();
+			}
+
 			Vector3 playerLocation = tom.transform.position;
 			Vector3 moveVector = new Vector3(playerLocation.x - transform.position.x, 0f,
 			                                 playerLocation.z - transform.position.z);
@@ -71,6 +77,8 @@ public class plainZombie : MonoBehaviour {
 					attacking = true;
 				}
 			}
+
+
 		}
 		else {
 			tom = GameObject.FindGameObjectWithTag ("Player");

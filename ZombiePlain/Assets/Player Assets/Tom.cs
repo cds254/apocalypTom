@@ -16,7 +16,6 @@ public class Tom : MonoBehaviour {
 	public Rigidbody projectile;
 
 
-
 	public float bulletSpeed = 1;
 
 	private float health = 100f;
@@ -119,79 +118,79 @@ public class Tom : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (UnityEngine.Random.Range (0, 1000) < 5) {		// 0.5% chance to spawn a zombie per frame.
-			trySpawnZombie();
-		}
 
-		if (UnityEngine.Random.Range (0, 10000) < 5) {		// 0.05% chance to spawn an item per frame.
-			trySpawnItem();
-		}
-
-		float xDistance = 0;
-		float yDistance = 0;
-
-		if (Input.GetAxis ("Horizontal") > 0) {
-			xDistance = 1;
-		} else if (Input.GetAxis ("Horizontal") < 0) {
-			xDistance = -1;
-		}
-		
-		if (Input.GetAxis ("Vertical") > 0) {
-			yDistance = 1;
-		} else if (Input.GetAxis ("Vertical") < 0) {
-			yDistance = -1;
-		}
-
-		//I didn't know if there was a built in time function so I just came up with this
-		counter = counter + 1;
-		if (counter >= 58) {
-			time = time + 1;
-			counter = 0;
-		}
-		if (Input.GetKey (KeyCode.X)) {
-			transform.Translate (0f, 0f, moveSpeed * Time.deltaTime);
-		} else if (Input.GetKey (KeyCode.Z)) {
-			transform.Translate (0f, 0f, -moveSpeed * Time.deltaTime);
-		}
-
-		float angle = Mathf.Atan2(Input.mousePosition.y - Screen.height/2, Input.mousePosition.x - Screen.width/2) * Mathf.Rad2Deg;
-		Vector3 currAngles = transform.eulerAngles;
-		Quaternion target = Quaternion.Euler(currAngles.x, 180f-angle, currAngles.z);
-		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
-
-		if (Input.GetMouseButtonDown(0))
+		if (health > 0) 
 		{
-			if (bulletCount > 0) {
-				anim.Play ("Strike");
+						if (UnityEngine.Random.Range (0, 1000) < 5) {		// 0.5% chance to spawn a zombie per frame.
+								trySpawnZombie ();
+						}
 
-				bulletCount--;
+						if (UnityEngine.Random.Range (0, 10000) < 5) {		// 0.05% chance to spawn an item per frame.
+								trySpawnItem ();
+						}
 
-				ammo -= 1;
-				Rigidbody bullet = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
-				Physics.IgnoreCollision(bullet.collider, collider);
-				bullet.velocity = transform.TransformDirection(new Vector3(0, 0, bulletSpeed));
+						float xDistance = 0;
+						float yDistance = 0;
+
+						if (Input.GetAxis ("Horizontal") > 0) {
+								xDistance = 1;
+						} else if (Input.GetAxis ("Horizontal") < 0) {
+								xDistance = -1;
+						}
+		
+						if (Input.GetAxis ("Vertical") > 0) {
+								yDistance = 1;
+						} else if (Input.GetAxis ("Vertical") < 0) {
+								yDistance = -1;
+						}
+
+						//I didn't know if there was a built in time function so I just came up with this
+						counter = counter + 1;
+						if (counter >= 58) {
+								time = time + 1;
+								counter = 0;
+						}
+						if (Input.GetKey (KeyCode.X)) {
+								transform.Translate (0f, 0f, moveSpeed * Time.deltaTime);
+						} else if (Input.GetKey (KeyCode.Z)) {
+								transform.Translate (0f, 0f, -moveSpeed * Time.deltaTime);
+						}
+
+						float angle = Mathf.Atan2 (Input.mousePosition.y - Screen.height / 2, Input.mousePosition.x - Screen.width / 2) * Mathf.Rad2Deg;
+						Vector3 currAngles = transform.eulerAngles;
+						Quaternion target = Quaternion.Euler (currAngles.x, 180f - angle, currAngles.z);
+						transform.rotation = Quaternion.Slerp (transform.rotation, target, Time.deltaTime * 15f);
+
+						if (Input.GetMouseButtonDown (0)) {
+								if (bulletCount > 0) {
+										anim.Play ("Strike");
+
+										bulletCount--;
+
+										ammo -= 1;
+										Rigidbody bullet = Instantiate (projectile, transform.position, transform.rotation) as Rigidbody;
+										Physics.IgnoreCollision (bullet.collider, collider);
+										bullet.velocity = transform.TransformDirection (new Vector3 (0, 0, bulletSpeed));
 
 
+								}
+						}
+		
+						if ((xDistance == 0) && (yDistance == 0)) {
+								anim.Play ("Idle2");
+						}
+
+						if ((xDistance != 0) || (yDistance != 0)) {
+								anim.Play ("Run2");
+						} else {
+								anim.Play ("Idle2");
+						}
+
+						// rotate
+						Vector3 moveVec = new Vector3 (xDistance, 0f, yDistance);
+						moveVec.Normalize ();
+						moveVec *= moveSpeed * Time.deltaTime;
+						transform.Translate (moveVec, Space.World);
 			}
-		}
-		
-		if ((xDistance == 0) && (yDistance == 0)) {
-						anim.Play ("Idle2");
-				}
-
-		if ((xDistance != 0) || (yDistance != 0)) 
-		{
-			anim.Play("Run2");
-		}
-		else
-		{
-			anim.Play("Idle2");
-		}
-
-		// rotate
-		Vector3 moveVec = new Vector3 (xDistance, 0f, yDistance);
-		moveVec.Normalize();
-		moveVec *= moveSpeed * Time.deltaTime;
-		transform.Translate (moveVec, Space.World);
 	}
 }
