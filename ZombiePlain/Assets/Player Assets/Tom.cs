@@ -20,7 +20,15 @@ public class Tom : MonoBehaviour {
 	private float health = 100f;
 	private int mobCount = 0;
 	private int itemCount = 0;
+<<<<<<< HEAD
 	private int bulletCount = 100;
+=======
+	private string weapon = "gun";
+	private int ammo = 500;
+	private int time = 0;
+	private int counter = 0;
+	private int kills = 0;
+>>>>>>> e089c57af0beb4ff928fa9dbfd1e04eff988a9a5
 
 	private Animator anim;
 
@@ -45,6 +53,22 @@ public class Tom : MonoBehaviour {
 
 	public int getMobCount() {
 		return mobCount;
+	}
+
+	public string getWeapon() {
+		return weapon;
+	}
+
+	public int getAmmo() {
+		return ammo;
+	}
+
+	public int getKills() {
+		return kills;
+	}
+
+	public int getTime(){
+			return time;
 	}
 
 	public void decreaseMobCount() {
@@ -114,7 +138,12 @@ public class Tom : MonoBehaviour {
 			yDistance = -1;
 		}
 
-
+		//I didn't know if there was a built in time function so I just came up with this
+		counter = counter + 1;
+		if (counter >= 58) {
+			time = time + 1;
+			counter = 0;
+		}
 		if (Input.GetKey (KeyCode.X)) {
 			transform.Translate (0f, 0f, moveSpeed * Time.deltaTime);
 		} else if (Input.GetKey (KeyCode.Z)) {
