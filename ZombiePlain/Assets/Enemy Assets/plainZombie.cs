@@ -5,6 +5,7 @@ using System.Collections;
 public class plainZombie : MonoBehaviour {
 	public float moveSpeed = 3f;
 	public float attackRange = 1.5f;
+	public float despawnRange = 300f;
 
 	private GameObject tom;
 	private bool attacking = false;
@@ -32,9 +33,14 @@ public class plainZombie : MonoBehaviour {
 			Quaternion target = Quaternion.Euler(currAngles.x, angle+90f, currAngles.z);
 			transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
 
+			if (moveVector.magnitude > despawnRange) {			// Despawn if zombie is too far away
+				tom.GetComponent<Tom>().decreaseMobCount();
+				Destroy(this);
+			}
 			if (moveVector.magnitude > attackRange) {
 				if (attacking) {
-					CancelInvoke("Damage");
+					Debug.Log ("Canceling attack");
+					CancelInvoke("Attack");
 					attacking = false;
 				}
 

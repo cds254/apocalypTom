@@ -7,29 +7,9 @@ public class gui : MonoBehaviour {
 	// Update is called once per frame
 	void OnGUI() {
 		GridManager gm = GameObject.Find ("Main Camera").GetComponent<GridManager>();
-		GameObject tom = GameObject.FindGameObjectWithTag ("Player");
-		string str;
-		Vector3 tmp = gm.calcGridCoord(tom.transform.position);
-		int tmp2 = gm.getBiome (tom.transform.position);
+		Tom tom = GameObject.FindGameObjectWithTag ("Player").GetComponent<Tom>();
 
-		switch(tmp2) {
-		case 1:
-			str = "plains";
-			break;
-		case 2:
-			str = "forest";
-			break;
-		case 3:
-			str = "desert";
-			break;
-		default:
-			str = tmp.ToString();
-			break;
-		}
-
-
-		GUI.TextArea(new Rect(5, 5, 100, 50), tmp.ToString());
-		GUI.TextArea(new Rect(5, 55, 100, 50), str);
-		GUI.TextArea(new Rect(5, 110, 100, 50), tom.transform.position.ToString());
+		GUI.TextArea(new Rect(5, Screen.height - 25, 75, 20), "Health: " + tom.getHealth().ToString());
+		GUI.TextArea(new Rect(Screen.width - 130, Screen.height - 25, 125, 20), "Mob Count: " + tom.getMobCount().ToString());
 	}
 }
