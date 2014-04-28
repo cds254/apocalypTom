@@ -5,8 +5,16 @@ public class Tom : MonoBehaviour {
 
 	public float moveSpeed = 10f;
 	public float rotateSpeed = 10f;
+	public float spawnRadius = 50f;
+	public int mobCap = 100;
+	public int itemCap = 10;
+
+	public Transform plainZombie;
+	public Transform forestZombie;
+	public Transform desertZombie;
 
 	private float health = 100f;
+	private int mobCount = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -24,21 +32,61 @@ public class Tom : MonoBehaviour {
 		}
 	}
 
+	public float getHealth () {
+		return health;
+	}
+
+	public int getMobCount() {
+		return mobCount;
+	}
+
+	public void decreaseMobCount() {
+		mobCount--;
+	}
+
+	private void trySpawnZombie() {
+		if (mobCount < mobCap) {
+			// pick a random point on a circle r=spawnRadius
+			int deg = UnityEngine.Random.Range (0, 360);
+			Vector3 circVector = new Vector3(spawnRadius, 0f, 0f);
+
+			circVector = Quaternion.AngleAxis (deg, Vector3.up) * circVector;
+
+			float x = transform.position.x + circVector.x;
+			float z = transform.position.z + circVector.z;
+
+			// Holy Shit Batman, can we get more verbose?
+			switch (GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<GridManager>().getBiome (new Vector3(x, 0f, z))) {
+				case 1:
+					GameObject.Instantiate (plainZombie, new Vector3(x, 0f, z), Quaternion.Euler(270, 90, 0));
+					break;
+				case 2:
+					GameObject.Instantiate (forestZombie, new Vector3(x, 0f, z), Quaternion.Euler(270, 90, 0));
+					break;
+				case 3:
+					GameObject.Instantiate (desertZombie, new Vector3(x, 0f, z), Quaternion.Euler(270, 90, 0));
+					break;
+			}
+
+			mobCount++;
+		}
+	}
+
+	private void trySpawnItem() {
+		if (itemCount < itemCap) {
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
-		/*
-		if (Input.GetAxis ("Horizontal") > 0) {
-			transform.Translate (-moveSpeed * Time.deltaTime, 0f, 0f);
-		} else if (Input.GetAxis ("Horizontal") < 0) {
-			transform.Translate (moveSpeed * Time.deltaTime, 0f, 0f);
+		if (UnityEngine.Random.Range (0, 1000) < 5) {		// 0.5% chance to spawn a zombie per frame.
+			trySpawnZombie();
 		}
 
-		if (Input.GetAxis ("Vertical") > 0) {
-			transform.Translate (0f, moveSpeed * Time.deltaTime, 0f);
-		} else if (Input.GetAxis ("Vertical") < 0) {
-			transform.Translate (0f, -moveSpeed * Time.deltaTime, 0f);
+		if (UnityEngine.Random.Range (0, 10000) < 5) {		// 0.05% chance to spawn an item per frame.
+			trySpawnItem();
 		}
-		*/
+
 		float xDistance = 0;
 		float yDistance = 0;
 
