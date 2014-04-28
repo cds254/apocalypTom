@@ -1,0 +1,338 @@
+fileFormatVersion: 2
+guid: 0d659207b42b62a49b895359a695697a
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Armature
+    100002: //RootNode
+    100004: head
+    100006: L_arm
+    100008: L_hip
+    100010: L_leg
+    100012: L_shoulder
+    100014: R_arm
+    100016: R_hip
+    100018: R_leg
+    100020: R_shoulder
+    100022: torso
+    400000: Armature
+    400002: //RootNode
+    400004: head
+    400006: L_arm
+    400008: L_hip
+    400010: L_leg
+    400012: L_shoulder
+    400014: R_arm
+    400016: R_hip
+    400018: R_leg
+    400020: R_shoulder
+    400022: torso
+    7400000: Idle
+    7400002: Idle2
+    7400004: Run
+    7400006: Run2
+    7400008: Strike
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Idle
+      takeName: Idle
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/L_hip
+        weight: 1
+      - path: Armature/L_hip/L_leg
+        weight: 1
+      - path: Armature/R_hip
+        weight: 1
+      - path: Armature/R_hip/R_leg
+        weight: 1
+      - path: Armature/torso
+        weight: 1
+      - path: Armature/torso/head
+        weight: 1
+      - path: Armature/torso/L_shoulder
+        weight: 1
+      - path: Armature/torso/L_shoulder/L_arm
+        weight: 1
+      - path: Armature/torso/R_shoulder
+        weight: 1
+      - path: Armature/torso/R_shoulder/R_arm
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle2
+      takeName: Idle2
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/L_hip
+        weight: 1
+      - path: Armature/L_hip/L_leg
+        weight: 1
+      - path: Armature/R_hip
+        weight: 1
+      - path: Armature/R_hip/R_leg
+        weight: 1
+      - path: Armature/torso
+        weight: 1
+      - path: Armature/torso/head
+        weight: 1
+      - path: Armature/torso/L_shoulder
+        weight: 1
+      - path: Armature/torso/L_shoulder/L_arm
+        weight: 1
+      - path: Armature/torso/R_shoulder
+        weight: 1
+      - path: Armature/torso/R_shoulder/R_arm
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Run
+      takeName: Run
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/L_hip
+        weight: 1
+      - path: Armature/L_hip/L_leg
+        weight: 1
+      - path: Armature/R_hip
+        weight: 1
+      - path: Armature/R_hip/R_leg
+        weight: 1
+      - path: Armature/torso
+        weight: 1
+      - path: Armature/torso/head
+        weight: 1
+      - path: Armature/torso/L_shoulder
+        weight: 1
+      - path: Armature/torso/L_shoulder/L_arm
+        weight: 1
+      - path: Armature/torso/R_shoulder
+        weight: 1
+      - path: Armature/torso/R_shoulder/R_arm
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Run2
+      takeName: Run2
+      firstFrame: .5
+      lastFrame: 23.5
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/L_hip
+        weight: 1
+      - path: Armature/L_hip/L_leg
+        weight: 1
+      - path: Armature/R_hip
+        weight: 1
+      - path: Armature/R_hip/R_leg
+        weight: 1
+      - path: Armature/torso
+        weight: 1
+      - path: Armature/torso/head
+        weight: 1
+      - path: Armature/torso/L_shoulder
+        weight: 1
+      - path: Armature/torso/L_shoulder/L_arm
+        weight: 1
+      - path: Armature/torso/R_shoulder
+        weight: 1
+      - path: Armature/torso/R_shoulder/R_arm
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Strike
+      takeName: Strike
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/L_hip
+        weight: 1
+      - path: Armature/L_hip/L_leg
+        weight: 1
+      - path: Armature/R_hip
+        weight: 1
+      - path: Armature/R_hip/R_leg
+        weight: 1
+      - path: Armature/torso
+        weight: 1
+      - path: Armature/torso/head
+        weight: 1
+      - path: Armature/torso/L_shoulder
+        weight: 1
+      - path: Armature/torso/L_shoulder/L_arm
+        weight: 1
+      - path: Armature/torso/R_shoulder
+        weight: 1
+      - path: Armature/torso/R_shoulder/R_arm
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

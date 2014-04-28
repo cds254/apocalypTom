@@ -1,15 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Enemy Assets\plainZombie.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Player Assets\Tom.cs">
     <Files>
-      <File FileName="Assets\lights.cs" Line="1" Column="1" />
-      <File FileName="Assets\Enemy Assets\plainZombie.cs" Line="27" Column="32" />
-      <File FileName="Assets\Hex Assets\GridManager.cs" Line="106" Column="2" />
-      <File FileName="Assets\Player Assets\Tom.cs" Line="20" Column="3" />
+      <File FileName="Assets\Hex Assets\GridManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Cube Assets\Cube.cs" Line="1" Column="1" />
-      <File FileName="Assets\Camera Assets\Camera.cs" Line="33" Column="15" />
-      <File FileName="Assets\gui.cs" Line="1" Column="1" />
-      <File FileName="Assets\lights.cs" Line="10" Column="36" />
+      <File FileName="Assets\Camera Assets\Camera.cs" Line="1" Column="1" />
+      <File FileName="Assets\Enemy Assets\plainZombie.cs" Line="1" Column="1" />
+      <File FileName="Assets\Player Assets\Tom.cs" Line="73" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

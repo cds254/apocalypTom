@@ -8,9 +8,11 @@ public class Tom : MonoBehaviour {
 
 	private float health = 100f;
 
+	private Animator anim;
+
 	// Use this for initialization
 	void Start () {
-	
+		anim = GetComponent<Animator> ();
 	}
 
 	public void takeDamage (float damage) {
@@ -65,6 +67,25 @@ public class Tom : MonoBehaviour {
 		Vector3 currAngles = transform.eulerAngles;
 		Quaternion target = Quaternion.Euler(currAngles.x, 180f-angle, currAngles.z);
 		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
+
+		Debug.Log (xDistance + ":" + yDistance + "\n");
+		if (Input.GetMouseButtonDown(0))
+		{
+			anim.Play ("Strike");
+		}
+		
+		if ((xDistance == 0) && (yDistance == 0)) {
+						anim.Play ("Idle2");
+				}
+
+		if ((xDistance != 0) || (yDistance != 0)) 
+		{
+			anim.Play("Run2");
+		}
+		else
+		{
+			anim.Play("Idle2");
+		}
 
 		// rotate
 		Vector3 moveVec = new Vector3 (xDistance, 0f, yDistance);
