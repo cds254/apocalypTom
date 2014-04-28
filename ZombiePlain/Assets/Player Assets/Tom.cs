@@ -13,9 +13,14 @@ public class Tom : MonoBehaviour {
 	public Transform forestZombie;
 	public Transform desertZombie;
 
+	public Rigidbody projectile;
+
+	public float bulletSpeed;
+
 	private float health = 100f;
 	private int mobCount = 0;
 	private int itemCount = 0;
+	private int bulletCount = 100;
 
 	private Animator anim;
 
@@ -30,8 +35,7 @@ public class Tom : MonoBehaviour {
 		Debug.Log ("Health: " + health.ToString());
 
 		if (health <= 0f) {
-			// DIE
-			Debug.Log ("Dead.");
+			die();
 		}
 	}
 
@@ -45,6 +49,11 @@ public class Tom : MonoBehaviour {
 
 	public void decreaseMobCount() {
 		mobCount--;
+	}
+
+	private void die () {
+		Debug.Log ("Dead.");
+		Destroy(this);
 	}
 
 	private void trySpawnZombie() {
@@ -117,10 +126,17 @@ public class Tom : MonoBehaviour {
 		Quaternion target = Quaternion.Euler(currAngles.x, 180f-angle, currAngles.z);
 		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
 
-		Debug.Log (xDistance + ":" + yDistance + "\n");
 		if (Input.GetMouseButtonDown(0))
 		{
-			anim.Play ("Strike");
+			if (bulletCount > 0) {
+				anim.Play ("Strike");
+
+				bulletCount--;
+
+				Rigidbody bullet = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
+				bullet.velocity = transform.TransformDirection(new Vector3(0, 0, bulletSpeed));
+
+			}
 		}
 		
 		if ((xDistance == 0) && (yDistance == 0)) {

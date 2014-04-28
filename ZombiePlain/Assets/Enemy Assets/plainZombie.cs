@@ -6,6 +6,7 @@ public class plainZombie : MonoBehaviour {
 	public float moveSpeed = 3f;
 	public float attackRange = 1.5f;
 	public float despawnRange = 300f;
+	public float health = 10f;
 
 	private GameObject tom;
 	private bool attacking = false;
@@ -17,6 +18,21 @@ public class plainZombie : MonoBehaviour {
 
 	void Attack () {
 		tom.GetComponent<Tom>().takeDamage(5f);
+	}
+
+	public void takeDamage (float damage) {
+		health -= damage;
+		
+		Debug.Log ("Health: " + health.ToString());
+		
+		if (health <= 0f) {
+			die();
+		}
+	}
+
+	private void die () {
+		tom.GetComponent<Tom>().decreaseMobCount();
+		Destroy(this);
 	}
 
 	// Update is called once per frame
@@ -34,8 +50,7 @@ public class plainZombie : MonoBehaviour {
 			transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 15f);
 
 			if (moveVector.magnitude > despawnRange) {			// Despawn if zombie is too far away
-				tom.GetComponent<Tom>().decreaseMobCount();
-				Destroy(this);
+				die();
 			}
 			if (moveVector.magnitude > attackRange) {
 				if (attacking) {
