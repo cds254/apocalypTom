@@ -7,7 +7,6 @@ public class Tom : MonoBehaviour {
 	public float rotateSpeed = 10f;
 	public float spawnRadius = 50f;
 	public int mobCap = 100;
-	public int itemCap = 10;
 
 	public Transform plainZombie;
 	public Transform forestZombie;
@@ -20,16 +19,11 @@ public class Tom : MonoBehaviour {
 
 	private float health = 100f;
 	private int mobCount = 0;
-	private int itemCount = 0;
-//<<<<<<< HEAD
-	private int bulletCount = 100;
-//=======
 	private string weapon = "gun";
 	private int ammo = 500;
 	private int time = 0;
 	private int counter = 0;
 	private int kills = 0;
-//>>>>>>> e089c57af0beb4ff928fa9dbfd1e04eff988a9a5
 
 	private Animator anim;
 
@@ -46,6 +40,10 @@ public class Tom : MonoBehaviour {
 		if (health <= 0) {
 			die();
 		}
+	}
+
+	public void increaseKill () {
+		kills++;
 	}
 
 	public float getHealth () {
@@ -108,11 +106,7 @@ public class Tom : MonoBehaviour {
 			mobCount++;
 		}
 	}
-
-	private void trySpawnItem() {
-		if (itemCount < itemCap) {
-		}
-	}
+	
 
 
 
@@ -121,12 +115,8 @@ public class Tom : MonoBehaviour {
 
 		if (health > 0) 
 		{
-						if (UnityEngine.Random.Range (0, 1000) < 5) {		// 0.5% chance to spawn a zombie per frame.
+						if (UnityEngine.Random.Range (0, 1000) < 20) {		// 2% chance to spawn a zombie per frame.
 								trySpawnZombie ();
-						}
-
-						if (UnityEngine.Random.Range (0, 10000) < 5) {		// 0.05% chance to spawn an item per frame.
-								trySpawnItem ();
 						}
 
 						float xDistance = 0;
@@ -162,12 +152,10 @@ public class Tom : MonoBehaviour {
 						transform.rotation = Quaternion.Slerp (transform.rotation, target, Time.deltaTime * 15f);
 
 						if (Input.GetMouseButtonDown (0)) {
-								if (bulletCount > 0) {
+								if (ammo > 0) {
 										anim.Play ("Strike");
 
-										bulletCount--;
-
-										ammo -= 1;
+										ammo--;
 										Rigidbody bullet = Instantiate (projectile, transform.position, transform.rotation) as Rigidbody;
 										bullet.velocity = transform.TransformDirection (new Vector3 (-bulletSpeed, 0, 0));
 
