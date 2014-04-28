@@ -169,8 +169,7 @@ public class Tom : MonoBehaviour {
 
 										ammo -= 1;
 										Rigidbody bullet = Instantiate (projectile, transform.position, transform.rotation) as Rigidbody;
-										Physics.IgnoreCollision (bullet.collider, collider);
-										bullet.velocity = transform.TransformDirection (new Vector3 (0, 0, bulletSpeed));
+										bullet.velocity = transform.TransformDirection (new Vector3 (-bulletSpeed, 0, 0));
 
 
 								}
