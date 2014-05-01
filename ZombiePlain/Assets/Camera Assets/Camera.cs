@@ -9,8 +9,8 @@ public class Camera : MonoBehaviour {
 	private float x;
 	private float z;
 	
-	private float xMargin = 2f;
-	private float zMargin = .5f;
+	private float xMargin = 1f;
+	private float zMargin = .25f;
 	
 	private float xMin;
 	private float zMin;
