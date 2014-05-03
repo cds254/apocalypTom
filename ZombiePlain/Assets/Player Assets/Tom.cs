@@ -7,10 +7,14 @@ public class Tom : MonoBehaviour {
 	public float rotateSpeed = 10f;
 	public float spawnRadius = 50f;
 	public int mobCap = 100;
+	public float zombieRate = 2f;
+	public float resourceRate = 2f;
 
 	public Transform plainZombie;
 	public Transform forestZombie;
 	public Transform desertZombie;
+
+	public Transform stick;
 
 	public Rigidbody projectile;
 
@@ -106,6 +110,32 @@ public class Tom : MonoBehaviour {
 			mobCount++;
 		}
 	}
+
+	private void trySpawnResource() {
+		// pick a random point on a circle r=spawnRadius
+		int deg = UnityEngine.Random.Range (0, 360);
+		Vector3 circVector = new Vector3(spawnRadius, 0f, 0f);
+		
+		circVector = Quaternion.AngleAxis (deg, Vector3.up) * circVector;
+		
+		float x = transform.position.x + circVector.x;
+		float z = transform.position.z + circVector.z;
+		
+		// Holy Shit Batman, can we get more verbose?
+		switch (GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<GridManager>().getBiome (new Vector3(x, 0f, z))) {
+		case 1:
+			//GameObject.Instantiate (plainZombie, new Vector3(x, 0f, z), Quaternion.Euler(270, 90, 0));
+			break;
+		case 2:
+			GameObject.Instantiate (stick, new Vector3(x, 0f, z), Quaternion.Euler(stick.transform.eulerAngles.x,
+			                                                                       stick.transform.eulerAngles.y,
+			                                                                       stick.transform.eulerAngles.z));
+			break;
+		case 3:
+			//GameObject.Instantiate (desertZombie, new Vector3(x, 0f, z), Quaternion.Euler(270, 90, 0));
+			break;
+		}
+	}
 	
 
 
@@ -115,9 +145,13 @@ public class Tom : MonoBehaviour {
 
 		if (health > 0) 
 		{
-						if (UnityEngine.Random.Range (0, 1000) < 20) {		// 2% chance to spawn a zombie per frame.
+						if (UnityEngine.Random.Range (0, 1000) < (zombieRate * 10)) {		// 2% chance to spawn a zombie per frame.
 								trySpawnZombie ();
 						}
+
+			if (UnityEngine.Random.Range (0, 1000) < (resourceRate * 10)) {		// 40% chance to spawn a zombie per frame.
+				trySpawnResource ();
+			}
 
 						float xDistance = 0;
 						float yDistance = 0;
